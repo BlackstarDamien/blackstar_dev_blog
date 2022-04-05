@@ -24,7 +24,7 @@ def make_test_article(
 def test_can_see_who_is_the_author_of_the_article():
     expected_author = "Tom Smith"
     article = make_test_article(expected_author)
-    articles_author = article.get_author()
+    articles_author = article.who_wrote_it()
 
     assert articles_author == expected_author
 
@@ -32,7 +32,7 @@ def test_can_see_who_is_the_author_of_the_article():
 def test_can_see_when_article_was_published():
     expected_publication_date = datetime(2021, 1, 1)
     article = make_test_article(publication_date=expected_publication_date)
-    articles_publication_date = article.get_publication_date()
+    articles_publication_date = article.when_was_published()
 
     assert articles_publication_date == expected_publication_date
 
@@ -40,7 +40,7 @@ def test_can_see_when_article_was_published():
 def test_can_see_attached_tags():
     expected_tags = ["javascript", "asynchronous programming", "mongo db"]
     article = make_test_article(tags=expected_tags)
-    articles_tags = article.get_tags()
+    articles_tags = article.which_tags_it_has()
 
     assert articles_tags == expected_tags
 
@@ -48,7 +48,7 @@ def test_can_see_attached_tags():
 def test_can_see_articles_description():
     expected_description = "Just some short article about nothing"
     article = make_test_article(description=expected_description)
-    articles_description = article.get_description()
+    articles_description = article.what_is_about()
 
     assert articles_description == expected_description
 

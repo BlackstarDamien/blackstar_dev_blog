@@ -11,23 +11,23 @@ class Article:
         description: str,
         content: str,
     ):
-        self._author = author
-        self._publication_date = publication_date
-        self._tags = tags
-        self._description = description
-        self._content = content
+        self.__author = author
+        self.__publication_date = publication_date
+        self.__tags = tags
+        self.__description = description
+        self.__content = content
 
-    def get_author(self) -> str:
-        return self._author
+    def who_wrote_it(self) -> str:
+        return self.__author
 
-    def get_publication_date(self) -> datetime:
-        return self._publication_date
+    def when_was_published(self) -> datetime:
+        return self.__publication_date
 
-    def get_tags(self) -> List[str]:
-        return self._tags
+    def which_tags_it_has(self) -> List[str]:
+        return self.__tags
 
-    def get_description(self) -> str:
-        return self._description
+    def what_is_about(self) -> str:
+        return self.__description
 
     def read(self) -> str:
-        return self._content
+        return self.__content
