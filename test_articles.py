@@ -3,57 +3,12 @@ from model import Article
 from datetime import datetime
 
 
-def make_test_article(
-    author="Noname",
-    publication_date=datetime.now(),
-    tags=[],
-    description="",
-    content="",
-):
-    article = Article(
-        author=author,
-        publication_date=publication_date,
-        tags=tags,
-        description=description,
-        content=content,
-    )
-
-    return article
-
-
-def test_can_see_who_is_the_author_of_the_article():
+def test_can_initialize_an_article_object():
+    expected_title = "Javascript for Dummies"
     expected_author = "Tom Smith"
-    article = make_test_article(expected_author)
-    articles_author = article.who_wrote_it()
-
-    assert articles_author == expected_author
-
-
-def test_can_see_when_article_was_published():
     expected_publication_date = datetime(2021, 1, 1)
-    article = make_test_article(publication_date=expected_publication_date)
-    articles_publication_date = article.when_was_published()
-
-    assert articles_publication_date == expected_publication_date
-
-
-def test_can_see_attached_tags():
     expected_tags = ["javascript", "asynchronous programming", "mongo db"]
-    article = make_test_article(tags=expected_tags)
-    articles_tags = article.which_tags_it_has()
-
-    assert articles_tags == expected_tags
-
-
-def test_can_see_articles_description():
     expected_description = "Just some short article about nothing"
-    article = make_test_article(description=expected_description)
-    articles_description = article.what_is_about()
-
-    assert articles_description == expected_description
-
-
-def test_can_read_articles_content():
     expected_content = """
     Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
     sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
@@ -63,7 +18,19 @@ def test_can_read_articles_content():
     Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt 
     mollit anim id est laborum.
     """
-    article = make_test_article(content=expected_content)
-    articles_content = article.read()
 
-    assert articles_content == expected_content
+    article = Article(
+        title=expected_title,
+        author=expected_author,
+        publication_date=expected_publication_date,
+        tags=expected_tags,
+        description=expected_description,
+        content=expected_content,
+    )
+
+    assert article.title == expected_title
+    assert article.author == expected_author
+    assert article.publication_date == expected_publication_date
+    assert article.tags == expected_tags
+    assert article.description == expected_description
+    assert article.content == expected_content
