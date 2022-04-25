@@ -1,4 +1,5 @@
-from model import Article
+import pytest
+from model import Article, Tag, TagNameTooLong, EmptyTagName
 
 from datetime import datetime
 
@@ -34,3 +35,13 @@ def test_can_initialize_an_article_object():
     assert article.tags == expected_tags
     assert article.description == expected_description
     assert article.content == expected_content
+
+
+def test_tag_should_raise_exception_when_name_is_empty():
+    with pytest.raises(EmptyTagName):
+        Tag(name="")
+
+
+def test_tag_shoul_raise_exception_when_name_is_too_long():
+    with pytest.raises(TagNameTooLong):
+        Tag(name="Lorem ipsum dolor sit amet, consectetur adipiscing elit")
