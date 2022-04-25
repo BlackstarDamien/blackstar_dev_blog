@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import List
 
 
 class TagNameTooLong(Exception):
@@ -35,7 +34,7 @@ class Article:
         title: str,
         author: str,
         publication_date: datetime,
-        tags: List[Tag],
+        tags: set[Tag],
         description: str,
         content: str,
     ):
