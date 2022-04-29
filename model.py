@@ -19,7 +19,7 @@ class Tag:
 
     @property
     def name(self):
-        return self.__name
+        return self._name
 
     @name.setter
     def name(self, value: str):
@@ -31,7 +31,7 @@ class Tag:
                 f"Provided name exceeded max length of {TAG_MAX_CHARS} characters."
             )
 
-        self.__name = value
+        self._name = value
 
 
 class Article:
@@ -42,7 +42,7 @@ class Article:
         publication_date: datetime,
         description: str,
         content: str,
-        tags: Optional[Set[Tag]] = {},
+        tags: Optional[Set[Tag]] = set(),
     ):
         self.title = title
         self.author = author
@@ -50,3 +50,9 @@ class Article:
         self.tags = tags
         self.description = description
         self.content = content
+
+    def __hash__(self) -> int:
+        return hash(self.title)
+
+    def __eq__(self, other) -> bool:
+        return self.title == other.title
