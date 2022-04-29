@@ -33,6 +33,12 @@ class Tag:
 
         self._name = value
 
+    def __hash__(self) -> int:
+        return hash(self.name)
+
+    def __eq__(self, other) -> bool:
+        return self.name == other.name
+
 
 class Article:
     def __init__(
