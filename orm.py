@@ -1,4 +1,4 @@
-import model
+import domain.model as model
 
 from sqlalchemy import MetaData, Table, Column, Integer, String, Date, Text, ForeignKey
 from sqlalchemy.orm import mapper, relationship

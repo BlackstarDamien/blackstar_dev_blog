@@ -1,4 +1,4 @@
-import model
+import domain.model as model
 import repository
 from datetime import date
 

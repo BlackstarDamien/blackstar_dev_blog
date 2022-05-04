@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABC
-from model import Article
+from domain.model import Article
 
 
 class AbstractRepository(ABC):
