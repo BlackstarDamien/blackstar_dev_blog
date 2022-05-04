@@ -1,4 +1,4 @@
-from model import Article, Tag
+from domain.model import Article, Tag
 from datetime import date
 
 

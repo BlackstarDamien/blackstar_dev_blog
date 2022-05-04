@@ -1,5 +1,5 @@
 import pytest
-from model import Article, Tag, TagNameTooLong, EmptyTagName
+from domain.model import Article, Tag, TagNameTooLong, EmptyTagName
 
 from datetime import datetime
 
