@@ -1,5 +1,5 @@
 import domain.model as model
-import repository
+import adapters.repository as repository
 from datetime import date
 
 
