@@ -1,0 +1,54 @@
+{
+    "name": "blackstar-blog-dev",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "..",
+    "forwardPorts": [
+        54321,
+        5000
+    ],
+    "settings": {
+        "editor.formatOnSave": true,
+        "python.languageServer": "Jedi",
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.profiles.linux": {
+            "bash": {
+                "path": "/bin/bash"
+            }
+        },
+        "python.pythonPath": "/usr/bin/python",
+        "python.sortImports.path": "/usr/local/bin/isort",
+        "python.linting.enabled": true,
+        "[python]": {
+            "editor.codeActionsOnSave": {
+                "source.organizeImports": true
+            },
+            "editor.rulers": [
+                72,
+                79,
+                105
+            ]
+        },
+        "git.autofetch": true,
+        "git.path": "/usr/bin/git",
+        "files.trimTrailingWhitespace": true,
+        "files.exclude": {
+            "**/*.pyc": {
+                "when": "$(basename).py"
+            },
+            "**/__pycache__": true
+        },
+        "yaml.validate": true,
+        "autoDocstring.docstringFormat": "numpy",
+    },
+    "extensions": [
+        "ms-python.python",
+        "ms-azuretools.vscode-docker",
+        "njdev.vscode-python-typehint",
+        "redhat.vscode-yaml",
+        "eamodio.gitlens",
+        "njpwerner.autodocstring",
+        "aaron-bond.better-comments",
+        "vscode-icons-team.vscode-icons"
+    ]
+}
