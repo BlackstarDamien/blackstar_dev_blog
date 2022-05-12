@@ -2,11 +2,7 @@
     "name": "blackstar-blog-dev",
     "dockerComposeFile": "docker-compose.yml",
     "service": "app",
-    "workspaceFolder": "..",
-    "forwardPorts": [
-        54321,
-        5000
-    ],
+    "workspaceFolder": "/code",
     "settings": {
         "editor.formatOnSave": true,
         "python.languageServer": "Jedi",
@@ -39,7 +35,7 @@
             "**/__pycache__": true
         },
         "yaml.validate": true,
-        "autoDocstring.docstringFormat": "numpy",
+        "autoDocstring.docstringFormat": "numpy"
     },
     "extensions": [
         "ms-python.python",
