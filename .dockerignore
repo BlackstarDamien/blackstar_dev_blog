@@ -1,0 +1,8 @@
+# Ignore everything
+**
+
+!/adapters/
+!/domain/
+!/entrypoints/
+!/tests/
+!requirements.txt
