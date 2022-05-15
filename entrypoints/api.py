@@ -14,10 +14,11 @@ app = Flask(__name__)
 def health_check():
     return "<h1>Hoooray! We are online!</h1>"
 
+
 @app.route("/articles")
 def get_articles():
     session = get_session()
-    repo = repostiory.SQLAlchemyRepository(session)
+    repo = repository.SQLAlchemyRepository(session)
     articles = repo.list_items()
 
     return articles, 200
