@@ -6,3 +6,4 @@
 !/entrypoints/
 !/tests/
 !requirements.txt
+!config.py
