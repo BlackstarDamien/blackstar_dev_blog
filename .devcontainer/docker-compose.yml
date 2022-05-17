@@ -7,9 +7,6 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - postgres
-    environment:
-      - DB_HOST=postgres
-      - DB_PASSWORD=test1
     volumes:
       - ../:/code
     ports:
@@ -20,5 +17,6 @@ services:
     environment:
       - POSTGRES_USER=blog_user
       - POSTGRES_PASSWORD=test123
+      - POSTGRES_DB=blog_db
     ports:
       - "54321:5432"

@@ -1,7 +1,7 @@
 FROM python:3.10-slim-bullseye
 
 RUN apt-get update
-RUN apt install -y git gcc postgresql musl-dev python3-dev
+RUN apt install -y git gcc postgresql postgresql-client musl-dev python3-dev
 RUN apt install -y libpq-dev
 
 COPY requirements.txt /tmp

@@ -1,5 +1,6 @@
 from abc import abstractmethod, ABC
 from domain.model import Article
+from typing import List
 
 
 class AbstractRepository(ABC):
@@ -22,3 +23,6 @@ class SQLAlchemyRepository(AbstractRepository):
     def get(self, title: str) -> Article:
         result = self.session.query(Article).filter_by(title=title).one()
         return result
+
+    def list_items(self) -> List[Article]:
+        return self.session.query(Article).all()
