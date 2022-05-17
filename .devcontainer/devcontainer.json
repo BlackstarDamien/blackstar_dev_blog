@@ -46,5 +46,6 @@
         "njpwerner.autodocstring",
         "aaron-bond.better-comments",
         "vscode-icons-team.vscode-icons"
-    ]
+    ],
+    "postCreateCommand": "sh ./.devcontainer/postCreateScript.sh"
 }
