@@ -4,6 +4,7 @@
 !/adapters/
 !/domain/
 !/entrypoints/
+!/service_layer/
 !/tests/
 !requirements.txt
 !config.py
