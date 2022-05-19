@@ -20,7 +20,10 @@ def test_api_returns_all_articles(add_articles, add_tags_to_article):
     assert len(articles.json()["articles"]) == 3
 
 
-def test_api_returns_specified_article():
+def test_api_returns_specified_article(add_articles):
+    add_articles([
+        ("Async Libraries in Python", "Tom Smith", "2022-01-01", "Some async libs", "Lorem ipsum...")
+    ])
     searched_title = "Async programming in Python"
     api_url = get_api_url()
     article = requests.get(f"{api_url}/article", json={"title": searched_title})
