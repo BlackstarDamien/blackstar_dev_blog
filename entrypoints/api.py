@@ -4,6 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from flask import Flask, jsonify
 
 from adapters import orm, repository
+from service_layer import services
 
 orm.start_mappers()
 get_session = sessionmaker(bind=create_engine(config.get_postgres_uri()))
@@ -24,7 +25,7 @@ def health_check():
 def get_articles():
     session = get_session()
     repo = repository.SQLAlchemyRepository(session)
-    articles = repo.list_items()
+    articles = services.list_articles(repo)
     articles = [{
         "title": article.title,
         "author": article.author,
