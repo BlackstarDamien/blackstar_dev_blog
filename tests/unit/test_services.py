@@ -20,6 +20,10 @@ class FakeRepository(AbstractRepository):
     def list_items(self) -> List[Article]:
         return list(self.articles)
 
+    def remove(self, title: str):
+        self.articles = set([article for article in self.articles
+                            if article.title != title])
+
 class FakeSession():
     def __init__(self):
         self.commited = False
@@ -97,3 +101,11 @@ def test_add_article_should_throw_exception_when_article_exists():
     )
     with pytest.raises(exceptions.ArticleAlreadyExists):
         services.add_article(article_rust, repo, FakeSession())
+
+def test_should_remove_article():
+    repo = prepare_fake_repo_with_data()
+    article_to_remove = "Design Virtual Machine in Rust"
+    services.remove_article(article_to_remove, repo, FakeSession())
+
+    with pytest.raises(exceptions.ArticleNotFound):
+        services.get_article(article_to_remove, repo)
