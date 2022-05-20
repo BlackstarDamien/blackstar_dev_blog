@@ -20,6 +20,13 @@ class FakeRepository(AbstractRepository):
     def list_items(self) -> List[Article]:
         return list(self.articles)
 
+class FakeSession():
+    def __init__(self):
+        self.commited = False
+
+    def commit(self):
+        self.commited = True
+
 def prepare_fake_repo_with_data():
     article_jenkins = Article(
         "Importance of using CI/CD",
@@ -64,3 +71,17 @@ def test_should_throw_exception_when_article_is_not_found():
     with pytest.raises(exceptions.ArticleNotFound):
         repo = prepare_fake_repo_with_data()
         services.get_article("Some nonexistent article", repo)
+
+def test_should_add_new_article():
+    repo = prepare_fake_repo_with_data()
+    new_article = Article(
+        "How to avoid loops in Python",
+        "Some Cool Programmer",
+        date(2022, 4, 15),
+        "In this article I'm telling how to optimize your code without loops",
+        "Something Something",
+    )
+    services.add_article(new_article, repo, FakeSession())
+    fetched_article = services.get_article("How to avoid loops in Python", repo)
+
+    assert fetched_article == new_article
