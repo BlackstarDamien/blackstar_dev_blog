@@ -20,3 +20,7 @@ def add_article(new_article: Article, repository: AbstractRepository, session):
 
     repository.add(new_article)
     session.commit()
+
+def remove_article(title: str, repository: AbstractRepository, session):
+    repository.remove(title)
+    session.commit()
