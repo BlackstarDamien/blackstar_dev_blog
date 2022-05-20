@@ -109,3 +109,17 @@ def test_should_remove_article():
 
     with pytest.raises(exceptions.ArticleNotFound):
         services.get_article(article_to_remove, repo)
+
+def test_should_edit_existing_article():
+    repo = prepare_fake_repo_with_data()
+    fields_to_change = {
+        "title": "Build Virtual Machine in Rust",
+        "content": "Lorem ipsum Test Foo Something"
+    }
+    article_to_edit = "Design Virtual Machine in Rust"
+    services.edit_article(article_to_edit, fields_to_change, repo, FakeSession())
+
+    changed_article = services.get_article(fields_to_change["title"], repo)
+
+    assert changed_article.title == fields_to_change["title"]
+    assert changed_article.content == fields_to_change["content"]
