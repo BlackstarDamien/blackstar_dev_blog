@@ -85,3 +85,15 @@ def test_should_add_new_article():
     fetched_article = services.get_article("How to avoid loops in Python", repo)
 
     assert fetched_article == new_article
+
+def test_add_article_should_throw_exception_when_article_exists():
+    repo = prepare_fake_repo_with_data()
+    article_rust = Article(
+        "Design Virtual Machine in Rust",
+        "Miles Kane",
+        date(2021, 12, 15),
+        "In this article we will create basic virtual machine in Rust",
+        "Something Something",
+    )
+    with pytest.raises(exceptions.ArticleAlreadyExists):
+        services.add_article(article_rust, repo, FakeSession())
