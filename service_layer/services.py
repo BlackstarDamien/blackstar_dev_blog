@@ -12,3 +12,7 @@ def get_article(title: str, repository: AbstractRepository) -> Article:
     except IndexError:
         raise ArticleNotFound(f"Article with title '{title}' not found.")
     return article
+
+def add_article(new_article: Article, repository: AbstractRepository, session):
+    repository.add(new_article)
+    session.commit()
