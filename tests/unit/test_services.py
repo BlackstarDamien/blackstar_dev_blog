@@ -14,6 +14,7 @@ article_jenkins = Article(
         "Something Something",
         {Tag("CI"), Tag("Jenkins")},
     )
+
 article_python = Article(
         "Design Patterns in Python",
         "Carl Johnson",
@@ -21,6 +22,7 @@ article_python = Article(
         "Introduction into design patterns in Python",
         "Something Something",
     )
+
 article_rust = Article(
         "Design Virtual Machine in Rust",
         "Miles Kane",
@@ -28,6 +30,7 @@ article_rust = Article(
         "In this article we will create basic virtual machine in Rust",
         "Something Something",
     )
+
 class FakeRepository(AbstractRepository):
     def __init__(self, articles: List[Article]):
         self.articles = set(articles)
