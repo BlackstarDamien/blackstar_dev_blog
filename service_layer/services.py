@@ -27,7 +27,7 @@ def remove_article(title: str, repository: AbstractRepository, session):
     session.commit()
 
 def edit_article(title: str, data: dict, repository: AbstractRepository, session):
-    article = repository.get(title)
+    article = get_article(title, repository)
     new_article = deepcopy(article)
 
     for field in data:

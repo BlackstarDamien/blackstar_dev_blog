@@ -6,6 +6,28 @@ from typing import List
 from datetime import date
 from service_layer import services, exceptions
 
+article_jenkins = Article(
+        "Importance of using CI/CD",
+        "Tom Smith",
+        date(2022, 4, 15),
+        "Interesting stuff about CI/CD",
+        "Something Something",
+        {Tag("CI"), Tag("Jenkins")},
+    )
+article_python = Article(
+        "Design Patterns in Python",
+        "Carl Johnson",
+        date(2022, 2, 23),
+        "Introduction into design patterns in Python",
+        "Something Something",
+    )
+article_rust = Article(
+        "Design Virtual Machine in Rust",
+        "Miles Kane",
+        date(2021, 12, 15),
+        "In this article we will create basic virtual machine in Rust",
+        "Something Something",
+    )
 class FakeRepository(AbstractRepository):
     def __init__(self, articles: List[Article]):
         self.articles = set(articles)
@@ -32,28 +54,6 @@ class FakeSession():
         self.commited = True
 
 def prepare_fake_repo_with_data():
-    article_jenkins = Article(
-        "Importance of using CI/CD",
-        "Tom Smith",
-        date(2022, 4, 15),
-        "Interesting stuff about CI/CD",
-        "Something Something",
-        {Tag("CI"), Tag("Jenkins")},
-    )
-    article_python = Article(
-        "Design Patterns in Python",
-        "Carl Johnson",
-        date(2022, 2, 23),
-        "Introduction into design patterns in Python",
-        "Something Something",
-    )
-    article_rust = Article(
-        "Design Virtual Machine in Rust",
-        "Miles Kane",
-        date(2021, 12, 15),
-        "In this article we will create basic virtual machine in Rust",
-        "Something Something",
-    )
     repo = FakeRepository([article_jenkins, article_python, article_rust])
     return repo
 
@@ -123,3 +123,14 @@ def test_should_edit_existing_article():
 
     assert changed_article.title == fields_to_change["title"]
     assert changed_article.content == fields_to_change["content"]
+
+def test_should_throw_exception_when_edit_missing_article():
+    repo = prepare_fake_repo_with_data()
+    fields_to_change = {
+        "title": "Build Virtual Machine in Rust",
+        "content": "Lorem ipsum Test Foo Something"
+    }
+    article_to_edit = "Some Article That Does Not Exist"
+
+    with pytest.raises(exceptions.ArticleNotFound):
+        services.edit_article(article_to_edit, fields_to_change, repo, FakeSession())
