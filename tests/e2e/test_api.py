@@ -3,15 +3,27 @@ from config import get_api_url
 import requests
 
 
-def test_api_returns_all_articles():
+def test_api_returns_all_articles(add_articles, add_tags_to_article):
+    add_articles([
+        ("Async Libraries in Python", "Tom Smith", "2022-01-01", "Some async libs", "Lorem ipsum..."),
+        ("Why Docker is the best", "Carl Johnson", "2016-05-09", "Why Docker is cool", "Docker is cool"),
+        ("PHP - A language of the internet", "John Doe", "2018-10-12", "About PHP", "Lorem ipsum..")
+    ])
+    add_tags_to_article(['Docker', 'Infrastructure'],
+                        title="Why Docker is the best",
+                        author="Carl Johnson",)
+
     api_url = get_api_url()
     articles = requests.get(f"{api_url}/articles")
 
     assert articles.status_code == 200
-    assert len(articles.json()["articles"]) == 5
+    assert len(articles.json()["articles"]) == 3
 
 
-def test_api_returns_specified_article():
+def test_api_returns_specified_article(add_articles):
+    add_articles([
+        ("Async Libraries in Python", "Tom Smith", "2022-01-01", "Some async libs", "Lorem ipsum...")
+    ])
     searched_title = "Async programming in Python"
     api_url = get_api_url()
     article = requests.get(f"{api_url}/article", json={"title": searched_title})

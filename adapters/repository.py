@@ -12,6 +12,14 @@ class AbstractRepository(ABC):
     def get(self, title: str):
         raise NotImplementedError
 
+    @abstractmethod
+    def list_items(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def remove(self, title: str):
+        raise NotImplementedError
+
 
 class SQLAlchemyRepository(AbstractRepository):
     def __init__(self, session):
@@ -26,3 +34,7 @@ class SQLAlchemyRepository(AbstractRepository):
 
     def list_items(self) -> List[Article]:
         return self.session.query(Article).all()
+
+    def remove(self, title: str):
+        article_to_remove = self.session.query(Article).filter_by(title=title).one()
+        self.session.delete(article_to_remove)
