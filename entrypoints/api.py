@@ -1,7 +1,7 @@
 import config
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 from adapters import orm, repository
 from service_layer import services
@@ -37,3 +37,31 @@ def get_articles():
 
     response = jsonify({"articles": articles})
     return response, 200
+
+@app.route("/article")
+def get_article():
+    session = get_session()
+    repo = repository.SQLAlchemyRepository(session)
+    title = request.json["title"]
+
+    article = services.get_article(title, repo)
+    article_json = {
+        "title": article.title,
+        "author": article.author,
+        "publication_date": str(article.publication_date),
+        "description": article.description,
+        "tags": [tag.name for tag in article.tags],
+        "content": article.content,
+    }
+
+    response = jsonify(article_json)
+    return article_json, 200
+
+@app.route("/article", methods=['POST'])
+def add_article():
+    session = get_session()
+    repo = repository.SQLAlchemyRepository(session)
+    services.add_article(request.json, repo, session)
+
+    return 201
+
