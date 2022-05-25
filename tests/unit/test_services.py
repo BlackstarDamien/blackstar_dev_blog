@@ -81,27 +81,29 @@ def test_should_throw_exception_when_article_is_not_found():
 
 def test_should_add_new_article():
     repo = prepare_fake_repo_with_data()
-    new_article = Article(
-        "How to avoid loops in Python",
-        "Some Cool Programmer",
-        date(2022, 4, 15),
-        "In this article I'm telling how to optimize your code without loops",
-        "Something Something",
-    )
+    new_article = {
+        "title": "How to avoid loops in Python",
+        "author": "Some Cool Programmer",
+        "publication_date": "15-04-2022",
+        "description": "In this article I'm telling how to optimize your code without loops",
+        "content": "Something Something",
+    }
     services.add_article(new_article, repo, FakeSession())
-    fetched_article = services.get_article("How to avoid loops in Python", repo)
 
-    assert fetched_article == new_article
+    fetched_article = services.get_article("How to avoid loops in Python", repo)
+    expected_article = Article(**new_article)
+
+    assert fetched_article == expected_article
 
 def test_add_article_should_throw_exception_when_article_exists():
     repo = prepare_fake_repo_with_data()
-    article_rust = Article(
-        "Design Virtual Machine in Rust",
-        "Miles Kane",
-        date(2021, 12, 15),
-        "In this article we will create basic virtual machine in Rust",
-        "Something Something",
-    )
+    article_rust = {
+        "title": "Design Virtual Machine in Rust",
+        "author": "Miles Kane",
+        "publication_date": "15-12-2021",
+        "description": "In this article we will create basic virtual machine in Rust",
+        "content": "Something Something",
+    }
     with pytest.raises(exceptions.ArticleAlreadyExists):
         services.add_article(article_rust, repo, FakeSession())
 
