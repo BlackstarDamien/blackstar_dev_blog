@@ -1,5 +1,5 @@
 from adapters.repository import AbstractRepository
-from domain.model import Article
+from domain.model import Article, Tag
 from typing import List
 from .exceptions import ArticleNotFound, ArticleAlreadyExists
 from copy import deepcopy
@@ -16,6 +16,9 @@ def get_article(title: str, repository: AbstractRepository) -> Article:
 
 def add_article(new_article: dict, repository: AbstractRepository, session):
     articles = list_articles(repository)
+
+    if 'tags' in new_article:
+        new_article["tags"] = {Tag(tag) for tag in new_article["tags"]}
 
     new_article = Article(**new_article)
     if new_article in articles:
