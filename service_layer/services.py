@@ -10,7 +10,7 @@ def list_articles(repository: AbstractRepository) -> List[Article]:
 def get_article(title: str, repository: AbstractRepository) -> Article:
     try:
         article = repository.get(title)
-    except IndexError:
+    except Exception:
         raise ArticleNotFound(f"Article with title '{title}' not found.")
     return article
 

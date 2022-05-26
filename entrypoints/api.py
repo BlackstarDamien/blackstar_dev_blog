@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from flask import Flask, jsonify, request
 
 from adapters import orm, repository
-from service_layer import services
+from service_layer import services, exceptions
 
 orm.start_mappers()
 get_session = sessionmaker(bind=create_engine(config.get_postgres_uri()))
@@ -44,7 +44,11 @@ def get_article():
     repo = repository.SQLAlchemyRepository(session)
     title = request.json["title"]
 
-    article = services.get_article(title, repo)
+    try:
+        article = services.get_article(title, repo)
+    except exceptions.ArticleNotFound as e:
+        return jsonify({"message": str(e)}), 404
+
     article_json = {
         "title": article.title,
         "author": article.author,
@@ -61,7 +65,10 @@ def get_article():
 def add_article():
     session = get_session()
     repo = repository.SQLAlchemyRepository(session)
-    services.add_article(request.json, repo, session)
+    try:
+        services.add_article(request.json, repo, session)
+    except exceptions.ArticleAlreadyExists as e:
+        return jsonify({"message": str(e)}), 400
 
     return jsonify({"message": "Article was added"}), 201
 
