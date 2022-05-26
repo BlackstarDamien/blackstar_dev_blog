@@ -24,7 +24,7 @@ def test_api_returns_specified_article(add_articles):
     add_articles([
         ("Async Libraries in Python", "Tom Smith", "2022-01-01", "Some async libs", "Lorem ipsum...")
     ])
-    searched_title = "Async programming in Python"
+    searched_title = "Async Libraries in Python"
     api_url = get_api_url()
     article = requests.get(f"{api_url}/article", json={"title": searched_title})
 
@@ -33,16 +33,16 @@ def test_api_returns_specified_article(add_articles):
 
 
 def test_api_should_save_articles():
-    with open("../test_data/example_article.txt") as f:
+    with open("./tests/test_data/example_article.txt") as f:
         article_content = f.read()
 
     article_to_add = {
         "title": "Custom hooks in React",
         "author": "Tommy Vercetti",
-        "publication_date": date(2022, 5, 12),
+        "publication_date": "2022-12-05",
         "description": "Let's see how you can easily create your own hooks in React",
         "content": article_content,
-        "tags": {"Hooks", "React", "Javascript"},
+        "tags": ["Hooks", "React", "Javascript"],
     }
 
     api_url = get_api_url()
@@ -61,4 +61,4 @@ def test_api_should_save_articles():
     assert added_article_json["publication_date"] == article_to_add["publication_date"]
     assert added_article_json["description"] == article_to_add["description"]
     assert added_article_json["content"] == article_to_add["content"]
-    assert added_article_json["tags"] == article_to_add["tags"]
+    assert sorted(added_article_json["tags"]) == sorted(article_to_add["tags"])
