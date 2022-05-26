@@ -63,5 +63,5 @@ def add_article():
     repo = repository.SQLAlchemyRepository(session)
     services.add_article(request.json, repo, session)
 
-    return 201
+    return jsonify({"message": "Article was added"}), 201
 
