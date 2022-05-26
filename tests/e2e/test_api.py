@@ -39,7 +39,7 @@ def test_api_should_save_articles():
     article_to_add = {
         "title": "Custom hooks in React",
         "author": "Tommy Vercetti",
-        "publication_date": "12-05-2022",
+        "publication_date": "2022-12-05",
         "description": "Let's see how you can easily create your own hooks in React",
         "content": article_content,
         "tags": ["Hooks", "React", "Javascript"],
@@ -61,4 +61,4 @@ def test_api_should_save_articles():
     assert added_article_json["publication_date"] == article_to_add["publication_date"]
     assert added_article_json["description"] == article_to_add["description"]
     assert added_article_json["content"] == article_to_add["content"]
-    assert added_article_json["tags"] == article_to_add["tags"]
+    assert sorted(added_article_json["tags"]) == sorted(article_to_add["tags"])
