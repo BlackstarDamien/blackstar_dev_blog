@@ -76,6 +76,7 @@ def test_post_article_should_return_400_and_error_message():
     assert post_request.status_code == 400
     assert post_request.json()["message"] == f"Article with title '{article_to_add['title']}' already exists."
 
+@pytest.mark.usefixtures("postgres_session")
 def test_patch_article_should_return_200_and_success_message():
     post_to_add_article("Async Libraries in Python", "Tom Smith", "2022-01-01", "Some async libs", "Lorem ipsum...")
     fields_to_change = {
