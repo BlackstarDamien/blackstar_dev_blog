@@ -10,6 +10,7 @@ articles = Table(
     "articles",
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("reference", String(255)),
     Column("title", String(255), nullable=False),
     Column("author", String(255), nullable=False),
     Column("publication_date", Date),
