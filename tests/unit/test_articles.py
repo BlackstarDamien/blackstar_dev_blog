@@ -5,21 +5,23 @@ from datetime import datetime
 
 
 def test_can_initialize_an_article_object_without_tags():
+    expected_ref = "test_id"
     expected_title = "Javascript for Dummies"
     expected_author = "Tom Smith"
     expected_publication_date = datetime(2021, 1, 1)
     expected_description = "Just some short article about nothing"
     expected_content = """
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris 
-    nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in 
-    reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt 
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+    nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+    reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
     mollit anim id est laborum.
     """
 
     article = Article(
+        reference=expected_ref,
         title=expected_title,
         author=expected_author,
         publication_date=expected_publication_date,
@@ -27,6 +29,7 @@ def test_can_initialize_an_article_object_without_tags():
         content=expected_content,
     )
 
+    assert article.reference == expected_ref
     assert article.title == expected_title
     assert article.author == expected_author
     assert article.publication_date == expected_publication_date
@@ -35,6 +38,7 @@ def test_can_initialize_an_article_object_without_tags():
 
 
 def test_can_initialize_an_article_object_with_tags():
+    expected_ref = "test_id"
     expected_title = "Javascript for Dummies"
     expected_author = "Tom Smith"
     expected_publication_date = datetime(2021, 1, 1)
@@ -45,16 +49,17 @@ def test_can_initialize_an_article_object_with_tags():
     }
     expected_description = "Just some short article about nothing"
     expected_content = """
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris 
-    nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in 
-    reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt 
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+    nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+    reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
     mollit anim id est laborum.
     """
 
     article = Article(
+        reference=expected_ref,
         title=expected_title,
         author=expected_author,
         publication_date=expected_publication_date,
