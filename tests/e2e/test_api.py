@@ -16,7 +16,7 @@ def post_to_add_article(title: str, author: str, publication_date: date,
         "content": content,
         "tags": tags
     }
-    response = requests.post(f"{url}/article", json=article_to_add)
+    response = requests.post(f"{url}/articles", json=article_to_add)
 
     assert response.status_code == 201
 
@@ -37,19 +37,18 @@ def test_get_article_endpoint_returns_200_and_specified_article():
     post_to_add_article("Async Libraries in Python", "Tom Smith", "2022-01-01", "Some async libs", "Lorem ipsum...")
     searched_title = "Async Libraries in Python"
     api_url = get_api_url()
-    article = requests.get(f"{api_url}/article", json={"title": searched_title})
+    article = requests.get(f"{api_url}/articles/async-libraries-in-python")
 
     assert article.status_code == 200
     assert article.json()["title"] == searched_title
 
 @pytest.mark.usefixtures("postgres_session")
 def test_get_article_endpoint_returns_404_and_specified_article():
-    searched_title = "Article That Does Not Exist"
     api_url = get_api_url()
-    article = requests.get(f"{api_url}/article", json={"title": searched_title})
+    article = requests.get(f"{api_url}/articles/article-that-does-not-exist")
 
     assert article.status_code == 404
-    assert article.json()["message"] == f"Article with title '{searched_title}' not found."
+    assert article.json()["message"] == f"Article not found."
 
 @pytest.mark.usefixtures("postgres_session")
 def test_post_article_should_return_400_and_error_message():
@@ -71,10 +70,10 @@ def test_post_article_should_return_400_and_error_message():
     }
 
     api_url = get_api_url()
-    post_request = requests.post(f"{api_url}/article", json=article_to_add)
+    post_request = requests.post(f"{api_url}/articles", json=article_to_add)
 
     assert post_request.status_code == 400
-    assert post_request.json()["message"] == f"Article with title '{article_to_add['title']}' already exists."
+    assert post_request.json()["message"] == f"Article already exists."
 
 @pytest.mark.usefixtures("postgres_session")
 def test_patch_article_should_return_200_and_success_message():
@@ -86,7 +85,7 @@ def test_patch_article_should_return_200_and_success_message():
     }
 
     api_url = get_api_url()
-    patch_request = requests.patch(f"{api_url}/article", json=fiels_to_change)
+    patch_request = requests.patch(f"{api_url}/articles/async-libraries-in-python", json=fields_to_change)
 
     assert patch_request.status_code == 200
     assert patch_request.json()["message"] == "Article successfully edited."
