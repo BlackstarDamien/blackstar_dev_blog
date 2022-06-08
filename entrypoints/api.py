@@ -65,6 +65,7 @@ def get_article(reference):
 def add_article():
     session = get_session()
     repo = repository.SQLAlchemyRepository(session)
+
     try:
         services.add_article(request.json, repo, session)
     except exceptions.ArticleAlreadyExists as e:
@@ -89,6 +90,9 @@ def remove_article(reference):
     session = get_session()
     repo = repository.SQLAlchemyRepository(session)
 
-    services.remove_article(reference, repo, session)
+    try:
+        services.remove_article(reference, repo, session)
+    except exceptions.ArticleNotFound as e:
+        return jsonify({"message": str(e)}), 404
 
     return jsonify({"message": "Article successfully removed."}), 200
