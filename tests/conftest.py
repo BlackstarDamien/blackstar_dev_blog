@@ -5,6 +5,16 @@ from adapters.orm import metadata, start_mappers
 
 import config
 
+def clean_db(session):
+    session.execute("DELETE FROM tags;")
+    session.execute("DELETE FROM articles;")
+    session.execute(
+            "ALTER SEQUENCE articles_id_seq RESTART WITH 1;"
+        )
+    session.execute(
+            "ALTER SEQUENCE tags_id_seq RESTART WITH 1;"
+        )
+    session.commit()
 
 @pytest.fixture
 def in_memory_db():
@@ -29,75 +39,7 @@ def postgres_db(scope='session'):
 @pytest.fixture
 def postgres_session(postgres_db):
     start_mappers()
-    yield sessionmaker(bind=postgres_db)()
+    session = sessionmaker(bind=postgres_db)()
+    yield session
     clear_mappers()
-
-@pytest.fixture
-def add_articles(postgres_session):
-    added_articles = set()
-
-    def _add_articles(lines):
-        for title, author, date, desc, content in lines:
-            postgres_session.execute(
-                'INSERT INTO articles (title, author, publication_date, description, content)'
-                ' VALUES (:title, :author, :pub_date, :desc, :content);',
-                dict(title=title, author=author, pub_date=date, desc=desc, content=content)
-            )
-            [[article_id]] = postgres_session.execute(
-                "SELECT id FROM articles WHERE title=:title AND author=:author;",
-                dict(title=title, author=author)
-                )
-            added_articles.add(article_id)
-
-        postgres_session.commit()
-
-    yield _add_articles
-
-    for article_id in added_articles:
-        postgres_session.execute(
-            "DELETE FROM articles WHERE id=:article_id",
-            dict(article_id=article_id)
-        )
-
-    postgres_session.execute(
-            "ALTER SEQUENCE tags_id_seq RESTART WITH 1;"
-        )
-    postgres_session.commit()
-
-@pytest.fixture
-def add_tags_to_article(postgres_session):
-    added_tags = set()
-
-    def _add_tags(lines, title, author):
-        [[article_id]] = postgres_session.execute(
-                "SELECT id FROM articles WHERE title=:title AND author=:author;",
-                dict(title=title, author=author)
-                )
-
-        for tag_name in lines:
-            postgres_session.execute(
-                'INSERT INTO tags (_name, articles_id)'
-                ' VALUES (:name, :article_id);',
-                dict(name=tag_name, article_id=article_id)
-            )
-            [[tag_id]] = postgres_session.execute(
-                "SELECT id FROM tags WHERE _name=:name AND articles_id=:article_id;",
-                dict(name=tag_name, article_id=article_id)
-                )
-            added_tags.add(tag_id)
-
-        postgres_session.commit()
-
-    yield _add_tags
-
-    for tag_id in added_tags:
-        postgres_session.execute(
-            "DELETE FROM tags WHERE id=:tag_id;",
-            dict(tag_id=tag_id)
-        )
-
-    postgres_session.execute(
-            "ALTER SEQUENCE tags_id_seq RESTART WITH 1;"
-        )
-
-    postgres_session.commit()
+    clean_db(session)

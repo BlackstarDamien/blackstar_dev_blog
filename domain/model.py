@@ -43,6 +43,7 @@ class Tag:
 class Article:
     def __init__(
         self,
+        reference: str,
         title: str,
         author: str,
         publication_date: datetime,
@@ -50,6 +51,7 @@ class Article:
         content: str,
         tags: Optional[Set[Tag]] = set(),
     ):
+        self.reference = reference
         self.title = title
         self.author = author
         self.publication_date = publication_date
@@ -58,7 +60,7 @@ class Article:
         self.content = content
 
     def __hash__(self) -> int:
-        return hash(self.title)
+        return hash(self.reference)
 
     def __eq__(self, other) -> bool:
-        return self.title == other.title
+        return self.reference == other.reference

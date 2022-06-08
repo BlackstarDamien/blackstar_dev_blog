@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS articles CASCADE;
 CREATE TABLE articles (
     id SERIAL PRIMARY KEY NOT NULL,
+    reference VARCHAR,
     title VARCHAR NOT NULL,
     author VARCHAR NOT NULL,
     publication_date DATE,

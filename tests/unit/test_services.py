@@ -1,12 +1,15 @@
 import pytest
+import uuid
 
 from adapters.repository import AbstractRepository
 from domain.model import Article, Tag
 from typing import List
 from datetime import date
 from service_layer import services, exceptions
+from copy import deepcopy
 
 article_jenkins = Article(
+        "importance-of-using-cdcd",
         "Importance of using CI/CD",
         "Tom Smith",
         date(2022, 4, 15),
@@ -16,6 +19,7 @@ article_jenkins = Article(
     )
 
 article_python = Article(
+        "design-patterns-in-python",
         "Design Patterns in Python",
         "Carl Johnson",
         date(2022, 2, 23),
@@ -24,6 +28,7 @@ article_python = Article(
     )
 
 article_rust = Article(
+        "design-virtual-machine-in-rust",
         "Design Virtual Machine in Rust",
         "Miles Kane",
         date(2021, 12, 15),
@@ -38,16 +43,24 @@ class FakeRepository(AbstractRepository):
     def add(self, article: Article):
         return self.articles.add(article)
 
-    def get(self, title: str) -> Article:
-        article = [article for article in self.articles if article.title == title]
+    def get(self, reference: str) -> Article:
+        article = [article for article in self.articles if article.reference == reference]
         return article[0]
 
     def list_items(self) -> List[Article]:
         return list(self.articles)
 
-    def remove(self, title: str):
+    def remove(self, reference: str):
+        if not any([x for x in self.list_items() if x.reference == reference]):
+            raise Exception
+
         self.articles = set([article for article in self.articles
-                            if article.title != title])
+                            if article.reference != reference])
+
+    def next_reference(self, custom_field: str) -> str:
+        slug_title = custom_field.lower()
+        slug_title = slug_title.replace(" ", "-")
+        return slug_title
 
 class FakeSession():
     def __init__(self):
@@ -70,7 +83,7 @@ def test_returns_all_articles():
 
 def test_get_single_article():
     repo = prepare_fake_repo_with_data()
-    article = services.get_article("Design Patterns in Python", repo)
+    article = services.get_article("design-patterns-in-python", repo)
 
     assert article == article_python
 
@@ -90,8 +103,11 @@ def test_should_add_new_article():
     }
     services.add_article(new_article, repo, FakeSession())
 
-    fetched_article = services.get_article("How to avoid loops in Python", repo)
-    expected_article = Article(**new_article)
+    fetched_article = services.get_article("how-to-avoid-loops-in-python", repo)
+
+    expected_article = deepcopy(new_article)
+    expected_article["reference"] = "how-to-avoid-loops-in-python"
+    expected_article = Article(**expected_article)
 
     assert fetched_article == expected_article
 
@@ -109,11 +125,16 @@ def test_add_article_should_throw_exception_when_article_exists():
 
 def test_should_remove_article():
     repo = prepare_fake_repo_with_data()
-    article_to_remove = "Design Virtual Machine in Rust"
+    article_to_remove = "design-virtual-machine-in-rust"
     services.remove_article(article_to_remove, repo, FakeSession())
 
     with pytest.raises(exceptions.ArticleNotFound):
         services.get_article(article_to_remove, repo)
+
+def test_remove_article_should_throw_exception():
+    with pytest.raises(exceptions.ArticleNotFound):
+        repo = prepare_fake_repo_with_data()
+        services.remove_article("Some nonexistent article", repo, FakeSession())
 
 def test_should_edit_existing_article():
     repo = prepare_fake_repo_with_data()
@@ -121,10 +142,10 @@ def test_should_edit_existing_article():
         "title": "Build Virtual Machine in Rust",
         "content": "Lorem ipsum Test Foo Something"
     }
-    article_to_edit = "Design Virtual Machine in Rust"
+    article_to_edit = "design-virtual-machine-in-rust"
     services.edit_article(article_to_edit, fields_to_change, repo, FakeSession())
 
-    changed_article = services.get_article(fields_to_change["title"], repo)
+    changed_article = services.get_article("build-virtual-machine-in-rust", repo)
 
     assert changed_article.title == fields_to_change["title"]
     assert changed_article.content == fields_to_change["content"]
