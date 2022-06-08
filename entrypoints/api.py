@@ -83,3 +83,12 @@ def edit_article(reference):
         return jsonify({"message": str(e)}), 404
 
     return jsonify({"message": "Article successfully edited."}), 200
+
+@app.route("/articles/<reference>", methods=['DELETE'])
+def remove_article(reference):
+    session = get_session()
+    repo = repository.SQLAlchemyRepository(session)
+
+    services.remove_article(reference, repo, session)
+
+    return jsonify({"message": "Article successfully removed."}), 200
