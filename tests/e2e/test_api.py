@@ -113,3 +113,11 @@ def test_delete_article_should_return_200_and_success_message():
 
     assert delete_request.status_code == 200
     assert delete_request.json()["message"] == "Article successfully removed."
+
+@pytest.mark.usefixtures("postgres_session")
+def test_delete_article_should_return_400_and_error_message():
+    api_url = get_api_url()
+    delete_request = requests.delete(f"{api_url}/articles/async-libraries-in-python")
+
+    assert delete_request.status_code == 404
+    assert delete_request.json()["message"] == "Article not found."
