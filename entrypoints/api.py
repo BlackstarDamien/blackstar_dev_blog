@@ -27,29 +27,29 @@ def get_articles():
     repo = repository.SQLAlchemyRepository(session)
     articles = services.list_articles(repo)
     articles = [{
+        "reference": article.reference,
         "title": article.title,
         "author": article.author,
         "publication_date": str(article.publication_date),
         "description": article.description,
         "tags": [tag.name for tag in article.tags],
-        "content": article.content,
     } for article in articles]
 
     response = jsonify({"articles": articles})
     return response, 200
 
-@app.route("/article")
-def get_article():
+@app.route("/articles/<reference>")
+def get_article(reference):
     session = get_session()
     repo = repository.SQLAlchemyRepository(session)
-    title = request.json["title"]
 
     try:
-        article = services.get_article(title, repo)
+        article = services.get_article(reference, repo)
     except exceptions.ArticleNotFound as e:
         return jsonify({"message": str(e)}), 404
 
     article_json = {
+        "reference": article.reference,
         "title": article.title,
         "author": article.author,
         "publication_date": str(article.publication_date),
@@ -61,7 +61,7 @@ def get_article():
     response = jsonify(article_json)
     return article_json, 200
 
-@app.route("/article", methods=['POST'])
+@app.route("/articles", methods=['POST'])
 def add_article():
     session = get_session()
     repo = repository.SQLAlchemyRepository(session)
@@ -72,3 +72,11 @@ def add_article():
 
     return jsonify({"message": "Article was added"}), 201
 
+@app.route("/articles/<reference>", methods=['PATCH'])
+def edit_article(reference):
+    session = get_session()
+    repo = repository.SQLAlchemyRepository(session)
+
+    services.edit_article(reference, request.json, repo, session)
+
+    return jsonify({"message": "Article successfully edited."}), 200
