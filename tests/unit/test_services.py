@@ -51,6 +51,9 @@ class FakeRepository(AbstractRepository):
         return list(self.articles)
 
     def remove(self, reference: str):
+        if not any([x for x in self.list_items() if x.reference == reference]):
+            raise Exception
+
         self.articles = set([article for article in self.articles
                             if article.reference != reference])
 
@@ -127,6 +130,11 @@ def test_should_remove_article():
 
     with pytest.raises(exceptions.ArticleNotFound):
         services.get_article(article_to_remove, repo)
+
+def test_remove_article_should_throw_exception():
+    with pytest.raises(exceptions.ArticleNotFound):
+        repo = prepare_fake_repo_with_data()
+        services.remove_article("Some nonexistent article", repo, FakeSession())
 
 def test_should_edit_existing_article():
     repo = prepare_fake_repo_with_data()
