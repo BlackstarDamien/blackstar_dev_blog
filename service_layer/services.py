@@ -29,7 +29,11 @@ def add_article(new_article: dict, repository: AbstractRepository, session):
     session.commit()
 
 def remove_article(reference: str, repository: AbstractRepository, session):
-    repository.remove(reference)
+    try:
+        repository.remove(reference)
+    except Exception:
+        raise ArticleNotFound(f"Article not found.")
+
     session.commit()
 
 def edit_article(reference: str, data: dict, repository: AbstractRepository, session):
