@@ -77,6 +77,9 @@ def edit_article(reference):
     session = get_session()
     repo = repository.SQLAlchemyRepository(session)
 
-    services.edit_article(reference, request.json, repo, session)
+    try:
+        services.edit_article(reference, request.json, repo, session)
+    except exceptions.ArticleNotFound as e:
+        return jsonify({"message": str(e)}), 404
 
     return jsonify({"message": "Article successfully edited."}), 200
