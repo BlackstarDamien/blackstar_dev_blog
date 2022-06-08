@@ -89,3 +89,18 @@ def test_patch_article_should_return_200_and_success_message():
 
     assert patch_request.status_code == 200
     assert patch_request.json()["message"] == "Article successfully edited."
+
+@pytest.mark.usefixtures("postgres_session")
+def test_patch_articles_should_return_400_and_error_message():
+    fields_to_change = {
+        "content": "Some new fresh content",
+        "description": "Some new description",
+        "tags": ["Python", "Coding"]
+    }
+
+    api_url = get_api_url()
+    patch_request = requests.patch(f"{api_url}/articles/async-libraries-in-python", json=fields_to_change)
+
+    assert patch_request.status_code == 404
+    assert patch_request.json()["message"] == "Article not found."
+
