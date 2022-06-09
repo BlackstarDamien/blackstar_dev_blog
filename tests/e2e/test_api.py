@@ -77,7 +77,7 @@ def test_post_article_should_return_400_and_error_message():
 
 @pytest.mark.usefixtures("postgres_session")
 def test_patch_article_should_return_200_and_success_message():
-    post_to_add_article("Async Libraries in Python", "Tom Smith", "2022-01-01", "Some async libs", "Lorem ipsum...")
+    post_to_add_article("Async Libraries in Python", "Tom Smith", "2022-01-01", "Some async libs", "Lorem ipsum...", ["Async", "Programming"])
     fields_to_change = {
         "content": "Some new fresh content",
         "description": "Some new description",
