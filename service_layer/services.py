@@ -44,7 +44,7 @@ def edit_article(reference: str, data: dict, repository: AbstractRepository, ses
         "publication_date": str(article.publication_date),
         "description": article.description,
         "content": article.content,
-        "tags": article.tags,
+        "tags": {tag.name for tag in article.tags},
     }
 
     for field in data:
