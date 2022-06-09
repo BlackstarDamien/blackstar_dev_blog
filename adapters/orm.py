@@ -37,7 +37,8 @@ def start_mappers():
         articles,
         properties={
             "tags": relationship(
-                tags_mapper, uselist=True, collection_class=set, backref="articles"
+                tags_mapper, uselist=True, collection_class=set, backref="articles",
+                cascade="all, delete, delete-orphan"
             ),
         },
     )
