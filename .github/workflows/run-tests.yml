@@ -18,7 +18,7 @@ jobs:
           python-version: "3.10"
 
       - name: Install dependencies
-        run: pip install -r tmp/requirements.txt
+        run: pip install -r requirements.txt
 
       - name: Static code analysis
         run: |
