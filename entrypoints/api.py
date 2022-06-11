@@ -1,10 +1,9 @@
 import config
+from adapters import orm, repository
+from flask import Flask, jsonify, request
+from service_layer import exceptions, services
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from flask import Flask, jsonify, request
-
-from adapters import orm, repository
-from service_layer import services, exceptions
 
 orm.start_mappers()
 get_session = sessionmaker(bind=create_engine(config.get_postgres_uri()))
@@ -26,17 +25,21 @@ def get_articles():
     session = get_session()
     repo = repository.SQLAlchemyRepository(session)
     articles = services.list_articles(repo)
-    articles = [{
-        "reference": article.reference,
-        "title": article.title,
-        "author": article.author,
-        "publication_date": str(article.publication_date),
-        "description": article.description,
-        "tags": [tag.name for tag in article.tags],
-    } for article in articles]
+    articles = [
+        {
+            "reference": article.reference,
+            "title": article.title,
+            "author": article.author,
+            "publication_date": str(article.publication_date),
+            "description": article.description,
+            "tags": [tag.name for tag in article.tags],
+        }
+        for article in articles
+    ]
 
     response = jsonify({"articles": articles})
     return response, 200
+
 
 @app.route("/articles/<reference>")
 def get_article(reference):
@@ -61,7 +64,8 @@ def get_article(reference):
     response = jsonify(article_json)
     return article_json, 200
 
-@app.route("/articles", methods=['POST'])
+
+@app.route("/articles", methods=["POST"])
 def add_article():
     session = get_session()
     repo = repository.SQLAlchemyRepository(session)
@@ -73,7 +77,8 @@ def add_article():
 
     return jsonify({"message": "Article was added"}), 201
 
-@app.route("/articles/<reference>", methods=['PATCH'])
+
+@app.route("/articles/<reference>", methods=["PATCH"])
 def edit_article(reference):
     session = get_session()
     repo = repository.SQLAlchemyRepository(session)
@@ -85,7 +90,8 @@ def edit_article(reference):
 
     return jsonify({"message": "Article successfully edited."}), 200
 
-@app.route("/articles/<reference>", methods=['DELETE'])
+
+@app.route("/articles/<reference>", methods=["DELETE"])
 def remove_article(reference):
     session = get_session()
     repo = repository.SQLAlchemyRepository(session)
