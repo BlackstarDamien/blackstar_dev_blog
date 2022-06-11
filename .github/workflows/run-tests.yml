@@ -36,4 +36,4 @@ jobs:
         run: pytest tests/integration
 
       - name: Run e2e tests
-        run: pytst tests/e2e
+        run: pytest tests/e2e
