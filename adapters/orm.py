@@ -28,6 +28,7 @@ tags = Table(
 
 
 def start_mappers():
+    """Gets Table objects and map them with proper domain models."""
     tags_mapper = mapper(
         model.Tag,
         tags,
