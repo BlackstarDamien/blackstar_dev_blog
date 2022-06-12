@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Build project container
-        run: docker-compose .devcontainer/docker-compose.yml up -d
+        run: docker-compose -f .devcontainer/docker-compose.yml up -d -p blog_api
 
       - name: Static code analysis
         run: |
