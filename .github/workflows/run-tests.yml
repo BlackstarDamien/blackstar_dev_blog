@@ -25,10 +25,10 @@ jobs:
           docker exec devcontainer_app_1 sh -c  "flake8 ./domain ./adapters ./entrypoints ./service_layer --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics"
 
       - name: Run unit tests
-        run: docker-compose exec pytest tests/unit
+        run: docker exec devcontainer_app_1 sh -c "pytest tests/unit"
 
       - name: Run integration tests
-        run: docker-compose exec pytest tests/integration
+        run: docker exec devcontainer_app_1 sh -c "pytest tests/integration"
 
       - name: Run e2e tests
-        run: docker-compose exec pytest tests/e2e
+        run: docker exec devcontainer_app_1 sh -c "pytest tests/e2e"
