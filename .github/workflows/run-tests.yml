@@ -5,6 +5,10 @@ on:
     branches:
       - "master"
 
+  pull_request:
+    branches:
+      - "master"
+
 jobs:
   deployment:
     runs-on: ubuntu-latest
@@ -12,24 +16,19 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v3
-        with:
-          python-version: "3.10"
-
-      - name: Install project dependencies
-        run: pip install -r requirements.txt
+      - name: Build project container
+        run: docker-compose -f .devcontainer/docker-compose.yml up -d
 
       - name: Static code analysis
         run: |
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-lenght=127 --statistics
+          docker exec devcontainer_app_1 sh -c "flake8 ./domain ./adapters ./entrypoints ./service_layer  --count --select=E9,F63,F7,F82 --show-source --statistics"
+          docker exec devcontainer_app_1 sh -c  "flake8 ./domain ./adapters ./entrypoints ./service_layer --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics"
 
       - name: Run unit tests
-        run: pytest tests/unit
+        run: docker exec devcontainer_app_1 sh -c "pytest tests/unit"
 
       - name: Run integration tests
-        run: pytest tests/integration
+        run: docker exec devcontainer_app_1 sh -c "pytest tests/integration"
 
       - name: Run e2e tests
-        run: pytst tests/e2e
+        run: docker exec devcontainer_app_1 sh -c "pytest tests/e2e"
