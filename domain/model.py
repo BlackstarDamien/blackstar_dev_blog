@@ -14,6 +14,9 @@ TAG_MAX_CHARS = 30
 
 
 class Tag:
+    """This value object represents tag assigned to article.
+    Tag is used to create category used to filtering articles on blog.
+    """
     def __init__(self, name: str):
         self.name = name
 
@@ -41,6 +44,13 @@ class Tag:
 
 
 class Article:
+    """This entity represents article, that blog consists of.
+    Each Article entity has it's title, author, content
+    and other properties that can be used to identify given object.
+    Also, to make identifying easy, every Article has it's own reference.
+    This can be an url slug, uuid or any other thing that can be used
+    as an identifier.
+    """
     def __init__(
         self,
         reference: str,
