@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 orm.start_mappers()
-get_session = sessionmaker(bind=create_engine(config.get_postgres_uri()))
+get_session = sessionmaker(bind=create_engine(config.get_postgres_uri(), pool_pre_ping=True))
 app = Flask(__name__)
 
 
