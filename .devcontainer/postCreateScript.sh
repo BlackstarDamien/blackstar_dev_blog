@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-POSTGRES_HOST="host.docker.internal"
+POSTGRES_HOST="172.17.0.1"
 POSTGRES_PORT="54321"
 
 POSTGRES_DB="blog_db"
