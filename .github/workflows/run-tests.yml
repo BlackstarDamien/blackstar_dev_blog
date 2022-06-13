@@ -42,6 +42,8 @@ jobs:
         run: pytest tests/integration
 
       - name: Run e2e tests
+        env:
+          FLASK_APP: entrypoints/api.py
         run: |
           flask run --host 0.0.0.0 --port 80
           pytest tests/e2e
