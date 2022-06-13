@@ -12,23 +12,34 @@ on:
 jobs:
   deployment:
     runs-on: ubuntu-latest
+    container: python:3.10-slim-bullseye
+
+    services:
+      postgres:
+        image: postgres:9.6
+        env:
+          POSTGRES_USER: blog_user
+          POSTGRES_PASSWORD: test123
+          POSTGRES_DB: blog_db
+        ports:
+          - 54321:5432
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Build project container
-        run: docker-compose -f .devcontainer/docker-compose.yml up -d
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
       - name: Static code analysis
         run: |
-          docker exec devcontainer_app_1 sh -c "flake8 ./domain ./adapters ./entrypoints ./service_layer  --count --select=E9,F63,F7,F82 --show-source --statistics"
-          docker exec devcontainer_app_1 sh -c  "flake8 ./domain ./adapters ./entrypoints ./service_layer --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics"
+          flake8 ./domain ./adapters ./entrypoints ./service_layer  --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 ./domain ./adapters ./entrypoints ./service_layer --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
       - name: Run unit tests
-        run: docker exec devcontainer_app_1 sh -c "pytest tests/unit"
+        run: pytest tests/unit
 
       - name: Run integration tests
-        run: docker exec devcontainer_app_1 sh -c "pytest tests/integration"
+        run: pytest tests/integration
 
       - name: Run e2e tests
-        run: docker exec devcontainer_app_1 sh -c "pytest tests/e2e"
+        run: pytest tests/e2e
