@@ -47,4 +47,3 @@ jobs:
         run: |
           flask run --host 0.0.0.0 --port 80 & sleep 2
           pytest tests/e2e
-          kill -9 `lsof -i:80 -t`
