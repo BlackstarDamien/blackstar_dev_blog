@@ -1,8 +1,11 @@
+from copy import deepcopy
+from typing import List
+
 from adapters.repository import AbstractRepository
 from domain.model import Article, Tag
-from typing import List
-from .exceptions import ArticleNotFound, ArticleAlreadyExists
-from copy import deepcopy
+
+from .exceptions import ArticleAlreadyExists, ArticleNotFound
+
 
 def list_articles(repository: AbstractRepository) -> List[Article]:
     """Calls list_items() method of repository to fetch
