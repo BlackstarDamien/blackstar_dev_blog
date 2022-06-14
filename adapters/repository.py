@@ -1,6 +1,7 @@
-from abc import abstractmethod, ABC
-from domain.model import Article
+from abc import ABC, abstractmethod
 from typing import List, Optional
+
+from domain.model import Article
 
 
 class AbstractRepository(ABC):
