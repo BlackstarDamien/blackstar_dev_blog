@@ -70,12 +70,22 @@ class FakeSession():
     def commit(self):
         self.commited = True
 
-def prepare_fake_repo_with_data():
+def prepare_fake_repo_with_data() -> FakeRepository:
+    """Creates test repostiory with preloaded test data.
+
+    Returns
+    -------
+    FakeRepository
+        Repository used for tests.
+    """
     repo = FakeRepository([article_jenkins, article_python, article_rust])
     return repo
 
 
 def test_returns_all_articles():
+    """Tests that list_articles() is able to show all available
+    articles.
+    """
     repo = prepare_fake_repo_with_data()
     articles = services.list_articles(repo)
 
@@ -83,17 +93,26 @@ def test_returns_all_articles():
     assert not set(articles) ^ expected
 
 def test_get_single_article():
+    """Tests that get_article() is able to return article
+    for given identifier.
+    """
     repo = prepare_fake_repo_with_data()
     article = services.get_article("design-patterns-in-python", repo)
 
     assert article == article_python
 
 def test_should_throw_exception_when_article_is_not_found():
+    """Tests that get_article() is able to throw exception
+    when article for given identifier is not found.
+    """
     with pytest.raises(exceptions.ArticleNotFound):
         repo = prepare_fake_repo_with_data()
         services.get_article("Some nonexistent article", repo)
 
 def test_should_add_new_article():
+    """Tests that add_article() is able to add new article
+    into repository.
+    """
     repo = prepare_fake_repo_with_data()
     new_article = {
         "title": "How to avoid loops in Python",
@@ -113,6 +132,9 @@ def test_should_add_new_article():
     assert fetched_article == expected_article
 
 def test_add_article_should_throw_exception_when_article_exists():
+    """Tests that add_article() is able to throw an exception
+    when trying to add article that already exists in repo.
+    """
     repo = prepare_fake_repo_with_data()
     article_rust = {
         "title": "Design Virtual Machine in Rust",
@@ -125,6 +147,9 @@ def test_add_article_should_throw_exception_when_article_exists():
         services.add_article(article_rust, repo, FakeSession())
 
 def test_should_remove_article():
+    """Tests that remove_article() is able to fully delete
+    article for given identifier from repo.
+    """
     repo = prepare_fake_repo_with_data()
     article_to_remove = "design-virtual-machine-in-rust"
     services.remove_article(article_to_remove, repo, FakeSession())
@@ -133,11 +158,17 @@ def test_should_remove_article():
         services.get_article(article_to_remove, repo)
 
 def test_remove_article_should_throw_exception():
+    """Tests that remove_article() throws exception
+    when trying to remove nonexistent article from repo.
+    """
     with pytest.raises(exceptions.ArticleNotFound):
         repo = prepare_fake_repo_with_data()
         services.remove_article("Some nonexistent article", repo, FakeSession())
 
 def test_should_edit_existing_article():
+    """Tests that edit_article() is able to edit existing article
+    with provided new values for given fields.
+    """
     repo = prepare_fake_repo_with_data()
     fields_to_change = {
         "title": "Build Virtual Machine in Rust",
@@ -152,6 +183,9 @@ def test_should_edit_existing_article():
     assert changed_article.content == fields_to_change["content"]
 
 def test_should_throw_exception_when_edit_missing_article():
+    """Tests that edit_article() is able to throw exception when
+    article to edit does not exist inside repo.
+    """
     repo = prepare_fake_repo_with_data()
     fields_to_change = {
         "title": "Build Virtual Machine in Rust",

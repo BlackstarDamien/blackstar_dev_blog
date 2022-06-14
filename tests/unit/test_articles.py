@@ -6,6 +6,7 @@ from domain.model import Article, EmptyTagName, Tag, TagNameTooLong
 
 
 def test_can_initialize_an_article_object_without_tags():
+    """Tests that an Article entity can be instantiated without tags."""
     expected_ref = "test_id"
     expected_title = "Javascript for Dummies"
     expected_author = "Tom Smith"
@@ -39,6 +40,7 @@ def test_can_initialize_an_article_object_without_tags():
 
 
 def test_can_initialize_an_article_object_with_tags():
+    """Tests that an Article entity can be instantiated with tags."""
     expected_ref = "test_id"
     expected_title = "Javascript for Dummies"
     expected_author = "Tom Smith"
@@ -73,10 +75,15 @@ def test_can_initialize_an_article_object_with_tags():
 
 
 def test_tag_should_raise_exception_when_name_is_empty():
+    """Tests that a Tag value object raises exception when
+    provided name is empty."""
     with pytest.raises(EmptyTagName):
         Tag("")
 
 
 def test_tag_shoul_raise_exception_when_name_is_too_long():
+    """Tests that a Tag value object raises exception when
+    provided name is too long.
+    """
     with pytest.raises(TagNameTooLong):
         Tag("Lorem ipsum dolor sit amet, consectetur adipiscing elit")
