@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request
 from service_layer import exceptions, services
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from typing import Dict, List, Tuple
 
 orm.start_mappers()
 get_session = sessionmaker(bind=create_engine(config.get_postgres_uri(), pool_pre_ping=True))
@@ -11,7 +12,14 @@ app = Flask(__name__)
 
 
 @app.route("/health")
-def health_check():
+def health_check() -> str:
+    """Checks if API is up and running.
+
+    Returns
+    -------
+    str
+        HTML code that is rendered into page.
+    """
     return """
         <center><div>
             <h1>Hoooray! We are online!</h1>
@@ -21,7 +29,14 @@ def health_check():
 
 
 @app.route("/articles")
-def get_articles():
+def get_articles() -> Tuple[Dict[str, List], int]:
+    """Returns list of all available articles.
+
+    Returns
+    -------
+    Tuple[Dict[str, List], int]
+        All available articles and status code.
+    """
     session = get_session()
     repo = repository.SQLAlchemyRepository(session)
     articles = services.list_articles(repo)
@@ -42,7 +57,19 @@ def get_articles():
 
 
 @app.route("/articles/<reference>")
-def get_article(reference):
+def get_article(reference: str) -> Tuple[Dict, int]:
+    """Returns article for given reference.
+
+    Parameters
+    ----------
+    reference : str
+        Article's identifier.
+
+    Returns
+    -------
+    Tuple[Dict, int]
+        Found article with status code.
+    """
     session = get_session()
     repo = repository.SQLAlchemyRepository(session)
 
@@ -66,7 +93,14 @@ def get_article(reference):
 
 
 @app.route("/articles", methods=["POST"])
-def add_article():
+def add_article() -> Tuple[dict, int]:
+    """Adds new article.
+
+    Returns
+    -------
+    Tuple[dict, int]
+        Message with status code.
+    """
     session = get_session()
     repo = repository.SQLAlchemyRepository(session)
 
@@ -79,7 +113,19 @@ def add_article():
 
 
 @app.route("/articles/<reference>", methods=["PATCH"])
-def edit_article(reference):
+def edit_article(reference: str) -> Tuple[dict, int]:
+    """Allows to edit article associated to given reference.
+
+    Parameters
+    ----------
+    reference : str
+        Article's identifier.
+
+    Returns
+    -------
+    Tuple[dict, int]
+        Message with status code.
+    """
     session = get_session()
     repo = repository.SQLAlchemyRepository(session)
 
@@ -92,7 +138,19 @@ def edit_article(reference):
 
 
 @app.route("/articles/<reference>", methods=["DELETE"])
-def remove_article(reference):
+def remove_article(reference: str) -> Tuple[dict, int]:
+    """Allow to remove article associated to given reference.
+
+    Parameters
+    ----------
+    reference : str
+        Article's identifier.
+
+    Returns
+    -------
+    Tuple[dict, int]
+        Message with status code.
+    """
     session = get_session()
     repo = repository.SQLAlchemyRepository(session)
 
