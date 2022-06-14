@@ -1,6 +1,7 @@
-import domain.model as model
-import adapters.repository as repository
 from datetime import date
+
+import adapters.repository as repository
+import domain.model as model
 
 
 def test_repository_can_save_an_article_without_tags(session):

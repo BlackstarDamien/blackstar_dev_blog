@@ -1,8 +1,10 @@
 from datetime import date
-from config import get_api_url
-import requests
-from typing import Optional, List
+from typing import List, Optional
+
 import pytest
+import requests
+
+from config import get_api_url
 
 
 def post_to_add_article(title: str, author: str, publication_date: date,

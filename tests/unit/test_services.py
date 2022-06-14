@@ -1,12 +1,13 @@
-import pytest
 import uuid
+from copy import deepcopy
+from datetime import date
+from typing import List
+
+import pytest
 
 from adapters.repository import AbstractRepository
 from domain.model import Article, Tag
-from typing import List
-from datetime import date
-from service_layer import services, exceptions
-from copy import deepcopy
+from service_layer import exceptions, services
 
 article_jenkins = Article(
         "importance-of-using-cdcd",

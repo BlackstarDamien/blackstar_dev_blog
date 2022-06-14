@@ -1,7 +1,8 @@
-import pytest
-from domain.model import Article, Tag, TagNameTooLong, EmptyTagName
-
 from datetime import datetime
+
+import pytest
+
+from domain.model import Article, EmptyTagName, Tag, TagNameTooLong
 
 
 def test_can_initialize_an_article_object_without_tags():
