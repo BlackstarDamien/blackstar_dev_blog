@@ -1,10 +1,12 @@
-import config
-from adapters import orm, repository
+from typing import Dict, List, Tuple
+
 from flask import Flask, jsonify, request
-from service_layer import exceptions, services
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from typing import Dict, List, Tuple
+
+import config
+from adapters import orm, repository
+from service_layer import exceptions, services
 
 orm.start_mappers()
 get_session = sessionmaker(bind=create_engine(config.get_postgres_uri(), pool_pre_ping=True))
