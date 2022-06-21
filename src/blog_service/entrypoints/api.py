@@ -4,12 +4,14 @@ from flask import Flask, jsonify, request
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-import config
-from adapters import orm, repository
-from service_layer import exceptions, services
+from src.blog_service import config
+from src.blog_service.adapters import orm, repository
+from src.blog_service.service_layer import exceptions, services
 
 orm.start_mappers()
-get_session = sessionmaker(bind=create_engine(config.get_postgres_uri(), pool_pre_ping=True))
+get_session = sessionmaker(
+    bind=create_engine(config.get_postgres_uri(), pool_pre_ping=True)
+)
 app = Flask(__name__)
 
 

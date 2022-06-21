@@ -7,9 +7,10 @@ RUN apt install -y libpq-dev
 COPY requirements.txt /tmp
 RUN pip install -r tmp/requirements.txt
 
-RUN mkdir -p /code
-COPY . /code/
-WORKDIR /code
+RUN mkdir -p src
+COPY src/ /src/
+COPY tests/ /tests/
 
-ENV FLASK_APP=entrypoints/api.py FLASK_DEBUG=1 PYTHONUNBUFFERED=1
+WORKDIR /src
+ENV FLASK_APP=blog_service/entrypoints/api.py FLASK_DEBUG=1 PYTHONUNBUFFERED=1
 CMD ["flask", "run", "--host", "0.0.0.0", "--port", "80"]

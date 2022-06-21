@@ -2,8 +2,8 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import clear_mappers, sessionmaker
 
-import config
-from adapters.orm import metadata, start_mappers
+from src.blog_service import config
+from src.blog_service.adapters.orm import metadata, start_mappers
 
 
 def clean_db(session):

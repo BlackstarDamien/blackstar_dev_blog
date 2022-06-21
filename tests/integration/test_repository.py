@@ -1,7 +1,7 @@
 from datetime import date
 
-import adapters.repository as repository
-import domain.model as model
+import src.blog_service.adapters.repository as repository
+import src.blog_service.domain.model as model
 
 
 def test_repository_can_save_an_article_with_tags(session):

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from domain.model import Article
+from src.blog_service.domain.model import Article
 
 
 class AbstractRepository(ABC):
@@ -74,10 +74,14 @@ class SQLAlchemyRepository(AbstractRepository):
         reference : str
             An Article's identifier.
         """
-        article_to_remove = self.session.query(Article).filter_by(reference=reference).one()
+        article_to_remove = (
+            self.session.query(Article).filter_by(reference=reference).one()
+        )
         self.session.delete(article_to_remove)
 
-    def next_reference(self, article_title: str, chars_limit: Optional[int]=None) -> str:
+    def next_reference(
+        self, article_title: str, chars_limit: Optional[int] = None
+    ) -> str:
         """Generates slug for given article's title with set limit of chars.
         That slug is used as an article's identifier in repository.
 

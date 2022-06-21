@@ -1,6 +1,6 @@
 from datetime import date
 
-from domain.model import Article, Tag
+from src.blog_service.domain.model import Article, Tag
 
 
 def test_article_mapper_can_fetch_articles(session):

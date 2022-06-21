@@ -1,10 +1,7 @@
 # Ignore everything
 **
 
-!/adapters/
-!/domain/
-!/entrypoints/
-!/service_layer/
+!/src/
 !/tests/
 !requirements.txt
 !config.py

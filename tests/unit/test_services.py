@@ -5,9 +5,9 @@ from typing import List
 
 import pytest
 
-from adapters.repository import AbstractRepository
-from domain.model import Article, Tag
-from service_layer import exceptions, services
+from src.blog_service.adapters.repository import AbstractRepository
+from src.blog_service.domain.model import Article, Tag
+from src.blog_service.service_layer import exceptions, services
 
 article_jenkins = Article(
         "importance-of-using-cdcd",

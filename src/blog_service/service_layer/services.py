@@ -1,8 +1,8 @@
 from copy import deepcopy
 from typing import List
 
-from adapters.repository import AbstractRepository
-from domain.model import Article, Tag
+from src.blog_service.adapters.repository import AbstractRepository
+from src.blog_service.domain.model import Article, Tag
 
 from .exceptions import ArticleAlreadyExists, ArticleNotFound
 
@@ -22,6 +22,7 @@ def list_articles(repository: AbstractRepository) -> List[Article]:
         List of available articles.
     """
     return repository.list_items()
+
 
 def get_article(reference: str, repository: AbstractRepository) -> Article:
     """Calls get() method of repository to fetch article
@@ -50,6 +51,7 @@ def get_article(reference: str, repository: AbstractRepository) -> Article:
         raise ArticleNotFound(f"Article not found.")
     return article
 
+
 def add_article(new_article: dict, repository: AbstractRepository, session):
     """Creates new Article object by using provided dictioniary,
     generates and assign reference, and calls add() method of repository
@@ -72,7 +74,7 @@ def add_article(new_article: dict, repository: AbstractRepository, session):
     articles = list_articles(repository)
 
     new_article["reference"] = repository.next_reference(new_article["title"])
-    if 'tags' in new_article:
+    if "tags" in new_article:
         new_article["tags"] = {Tag(tag) for tag in new_article["tags"]}
 
     new_article = Article(**new_article)
@@ -81,6 +83,7 @@ def add_article(new_article: dict, repository: AbstractRepository, session):
 
     repository.add(new_article)
     session.commit()
+
 
 def remove_article(reference: str, repository: AbstractRepository, session):
     """Calls remove() method of repository to remove article for given
@@ -106,6 +109,7 @@ def remove_article(reference: str, repository: AbstractRepository, session):
         raise ArticleNotFound(f"Article not found.")
 
     session.commit()
+
 
 def edit_article(reference: str, data: dict, repository: AbstractRepository, session):
     """Create scopy of article assigned with given reference, apply modifications
