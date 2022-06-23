@@ -1,9 +1,8 @@
 import pytest
-from sqlalchemy import create_engine
-from sqlalchemy.orm import clear_mappers, sessionmaker
-
 from blog_service import config
 from blog_service.adapters.orm import metadata, start_mappers
+from sqlalchemy import create_engine
+from sqlalchemy.orm import clear_mappers, sessionmaker
 
 
 def clean_db(session):
@@ -20,15 +19,18 @@ def in_memory_db():
     metadata.create_all(engine)
     return engine
 
+
 @pytest.fixture
 def session_factory(in_memory_db):
     start_mappers()
     yield sessionmaker(bind=in_memory_db)
     clear_mappers()
 
+
 @pytest.fixture
 def session(session_factory):
     return session_factory()
+
 
 @pytest.fixture
 def postgres_db(scope="session"):
