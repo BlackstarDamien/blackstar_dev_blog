@@ -1,8 +1,8 @@
 from copy import deepcopy
 from typing import List
 
-from src.blog_service.adapters.repository import AbstractRepository
-from src.blog_service.domain.model import Article, Tag
+from blog_service.adapters.repository import AbstractRepository
+from blog_service.domain.model import Article, Tag
 
 from .exceptions import ArticleAlreadyExists, ArticleNotFound
 

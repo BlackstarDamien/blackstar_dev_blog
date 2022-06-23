@@ -4,9 +4,9 @@ from flask import Flask, jsonify, request
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from src.blog_service import config
-from src.blog_service.adapters import orm, repository
-from src.blog_service.service_layer import exceptions, services
+from blog_service import config
+from blog_service.adapters import orm, repository
+from blog_service.service_layer import exceptions, services
 
 orm.start_mappers()
 get_session = sessionmaker(

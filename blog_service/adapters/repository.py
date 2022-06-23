@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from src.blog_service.domain.model import Article
+from blog_service.domain.model import Article
 
 
 class AbstractRepository(ABC):

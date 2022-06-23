@@ -1,7 +1,10 @@
 # Ignore everything
 **
 
-!/src/
-!/tests/
+# Allow project directories
+!/blog_service/**
+!/tests/**
+!/.devcontainer/**
+
+# Allow requirements
 !requirements.txt
-!config.py

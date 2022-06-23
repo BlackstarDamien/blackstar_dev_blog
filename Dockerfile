@@ -7,10 +7,9 @@ RUN apt install -y libpq-dev
 COPY requirements.txt /tmp
 RUN pip install -r tmp/requirements.txt
 
-RUN mkdir -p src
-COPY src/ /src/
-COPY tests/ /tests/
+RUN mkdir -p blackstar_blog_engine
+COPY . /blackstar_blog_engine/
 
-WORKDIR /src
+WORKDIR /blackstar_blog_engine
 ENV FLASK_APP=blog_service/entrypoints/api.py FLASK_DEBUG=1 PYTHONUNBUFFERED=1
 CMD ["flask", "run", "--host", "0.0.0.0", "--port", "80"]
