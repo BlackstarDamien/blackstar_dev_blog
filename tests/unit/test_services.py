@@ -1,10 +1,8 @@
-import uuid
 from copy import deepcopy
 from datetime import date
 from typing import List
 
 import pytest
-
 from blog_service.adapters.repository import AbstractRepository
 from blog_service.domain.model import Article, Tag
 from blog_service.service_layer import exceptions, services, unit_of_work
@@ -166,7 +164,7 @@ def test_should_remove_article():
     services.remove_article(article_to_remove, uow)
 
     with pytest.raises(exceptions.ArticleNotFound):
-        services.get_article(article_to_remove, repo)
+        services.get_article(article_to_remove, uow)
 
 
 def test_remove_article_should_throw_exception():
