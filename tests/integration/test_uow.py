@@ -29,5 +29,8 @@ def insert_article(
 ):
     session.execute(
         "INSERT INTO articles(reference, title, author, publication_date, description, content) VALUES "
-        "(:ref, :title, :author, :date, :desc, :content);"
+        "(:ref, :title, :author, :date, :desc, :content);",
+        dict(
+            ref=ref, title=title, author=author, date=date, desc=desc, content=content
+        ),
     )
