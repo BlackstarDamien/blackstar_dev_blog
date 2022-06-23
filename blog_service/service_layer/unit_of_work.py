@@ -1,16 +1,20 @@
 from abc import ABC, abstractmethod
-from blog_service.adapters.repository import AbstractRepository, SQLAlchemyRepository
 
+from blog_service import config
+from blog_service.adapters.repository import AbstractRepository, SQLAlchemyRepository
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from blog_service import config
 
 
 class AbstractUnitOfWork(ABC):
     articles: AbstractRepository
 
-    def __exit__(self, *args):
-        self.rollback()
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exn_type, *args):
+        if exn_type is not None:
+            self.rollback()
 
     @abstractmethod
     def commit(self):
