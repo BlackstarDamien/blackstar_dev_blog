@@ -1,13 +1,14 @@
 from copy import deepcopy
 from typing import List
 
-from adapters.repository import AbstractRepository
-from domain.model import Article, Tag
+from blog_service.adapters.repository import AbstractRepository
+from blog_service.domain.model import Article, Tag
 
 from .exceptions import ArticleAlreadyExists, ArticleNotFound
+from .unit_of_work import AbstractUnitOfWork
 
 
-def list_articles(repository: AbstractRepository) -> List[Article]:
+def list_articles(uow: AbstractUnitOfWork) -> List[Article]:
     """Calls list_items() method of repository to fetch
     list of all available articles.
 
@@ -21,9 +22,12 @@ def list_articles(repository: AbstractRepository) -> List[Article]:
     List[Article]
         List of available articles.
     """
-    return repository.list_items()
+    with uow:
+        articles = deepcopy(uow.articles.list_items())
+    return articles
 
-def get_article(reference: str, repository: AbstractRepository) -> Article:
+
+def get_article(reference: str, uow: AbstractUnitOfWork) -> Article:
     """Calls get() method of repository to fetch article
     assigned to given reference.
 
@@ -45,12 +49,14 @@ def get_article(reference: str, repository: AbstractRepository) -> Article:
         Raised when article was not found for given reference.
     """
     try:
-        article = repository.get(reference)
+        with uow:
+            article = deepcopy(uow.articles.get(reference))
     except Exception:
-        raise ArticleNotFound(f"Article not found.")
+        raise ArticleNotFound("Article not found.")
     return article
 
-def add_article(new_article: dict, repository: AbstractRepository, session):
+
+def add_article(new_article: dict, uow: AbstractUnitOfWork):
     """Creates new Article object by using provided dictioniary,
     generates and assign reference, and calls add() method of repository
     to add article into repository.
@@ -69,20 +75,22 @@ def add_article(new_article: dict, repository: AbstractRepository, session):
     ArticleAlreadyExists
         Raised when article with the same reference exists.
     """
-    articles = list_articles(repository)
+    with uow:
+        articles = uow.articles.list_items()
 
-    new_article["reference"] = repository.next_reference(new_article["title"])
-    if 'tags' in new_article:
-        new_article["tags"] = {Tag(tag) for tag in new_article["tags"]}
+        new_article["reference"] = uow.articles.next_reference(new_article["title"])
+        if "tags" in new_article:
+            new_article["tags"] = {Tag(tag) for tag in new_article["tags"]}
 
-    new_article = Article(**new_article)
-    if new_article in articles:
-        raise ArticleAlreadyExists(f"Article already exists.")
+        new_article = Article(**new_article)
+        if new_article in articles:
+            raise ArticleAlreadyExists("Article already exists.")
 
-    repository.add(new_article)
-    session.commit()
+        uow.articles.add(new_article)
+        uow.commit()
 
-def remove_article(reference: str, repository: AbstractRepository, session):
+
+def remove_article(reference: str, uow: AbstractUnitOfWork):
     """Calls remove() method of repository to remove article for given
     reference.
 
@@ -101,13 +109,14 @@ def remove_article(reference: str, repository: AbstractRepository, session):
         Raised when article was not found for given reference.
     """
     try:
-        repository.remove(reference)
+        with uow:
+            uow.articles.remove(reference)
+            uow.commit()
     except Exception:
-        raise ArticleNotFound(f"Article not found.")
+        raise ArticleNotFound("Article not found.")
 
-    session.commit()
 
-def edit_article(reference: str, data: dict, repository: AbstractRepository, session):
+def edit_article(reference: str, data: dict, uow: AbstractUnitOfWork):
     """Create scopy of article assigned with given reference, apply modifications
     from data dictionary and replaces old article with modified one.
 
@@ -122,19 +131,18 @@ def edit_article(reference: str, data: dict, repository: AbstractRepository, ses
     session :
         Session object
     """
-    article = get_article(reference, repository)
-    new_article = {
-        "title": article.title,
-        "author": article.author,
-        "publication_date": str(article.publication_date),
-        "description": article.description,
-        "content": article.content,
-        "tags": {tag.name for tag in article.tags},
-    }
+    with uow:
+        try:
+            article = deepcopy(uow.articles.get(reference))
+        except Exception:
+            raise ArticleNotFound("Article not found.")
 
-    for field in data:
-        new_article[field] = data[field]
+        if "tags" in data:
+            data["tags"] = {Tag(name) for name in data["tags"]}
 
-    remove_article(article.reference, repository, session)
-    add_article(new_article, repository, session)
-    session.commit()
+        for field in data:
+            setattr(article, field, data[field])
+
+        article.reference = uow.articles.next_reference(article.title)
+        uow.articles.add(article)
+        uow.commit()

@@ -1,8 +1,6 @@
-from sqlalchemy import (Column, Date, ForeignKey, Integer, MetaData, String,
-                        Table, Text)
+from blog_service.domain import model
+from sqlalchemy import Column, Date, ForeignKey, Integer, MetaData, String, Table, Text
 from sqlalchemy.orm import mapper, relationship
-
-import domain.model as model
 
 metadata = MetaData()
 
@@ -39,8 +37,12 @@ def start_mappers():
         articles,
         properties={
             "tags": relationship(
-                tags_mapper, uselist=True, collection_class=set, backref="articles",
-                cascade="all, delete, delete-orphan"
+                tags_mapper,
+                uselist=True,
+                collection_class=set,
+                backref="articles",
+                lazy="subquery",
+                cascade="all, delete, delete-orphan",
             ),
         },
     )

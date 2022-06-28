@@ -1,15 +1,10 @@
 from typing import Dict, List, Tuple
 
+from blog_service.adapters import orm
+from blog_service.service_layer import exceptions, services, unit_of_work
 from flask import Flask, jsonify, request
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
-import config
-from adapters import orm, repository
-from service_layer import exceptions, services
 
 orm.start_mappers()
-get_session = sessionmaker(bind=create_engine(config.get_postgres_uri(), pool_pre_ping=True))
 app = Flask(__name__)
 
 
@@ -39,9 +34,8 @@ def get_articles() -> Tuple[Dict[str, List], int]:
     Tuple[Dict[str, List], int]
         All available articles and status code.
     """
-    session = get_session()
-    repo = repository.SQLAlchemyRepository(session)
-    articles = services.list_articles(repo)
+    uow = unit_of_work.SqlAlchemyUnitOfWork()
+    articles = services.list_articles(uow)
     articles = [
         {
             "reference": article.reference,
@@ -72,11 +66,10 @@ def get_article(reference: str) -> Tuple[Dict, int]:
     Tuple[Dict, int]
         Found article with status code.
     """
-    session = get_session()
-    repo = repository.SQLAlchemyRepository(session)
+    uow = unit_of_work.SqlAlchemyUnitOfWork()
 
     try:
-        article = services.get_article(reference, repo)
+        article = services.get_article(reference, uow)
     except exceptions.ArticleNotFound as e:
         return jsonify({"message": str(e)}), 404
 
@@ -89,9 +82,7 @@ def get_article(reference: str) -> Tuple[Dict, int]:
         "tags": [tag.name for tag in article.tags],
         "content": article.content,
     }
-
-    response = jsonify(article_json)
-    return article_json, 200
+    return jsonify(article_json), 200
 
 
 @app.route("/articles", methods=["POST"])
@@ -103,11 +94,10 @@ def add_article() -> Tuple[dict, int]:
     Tuple[dict, int]
         Message with status code.
     """
-    session = get_session()
-    repo = repository.SQLAlchemyRepository(session)
+    uow = unit_of_work.SqlAlchemyUnitOfWork()
 
     try:
-        services.add_article(request.json, repo, session)
+        services.add_article(request.json, uow)
     except exceptions.ArticleAlreadyExists as e:
         return jsonify({"message": str(e)}), 400
 
@@ -128,11 +118,10 @@ def edit_article(reference: str) -> Tuple[dict, int]:
     Tuple[dict, int]
         Message with status code.
     """
-    session = get_session()
-    repo = repository.SQLAlchemyRepository(session)
+    uow = unit_of_work.SqlAlchemyUnitOfWork()
 
     try:
-        services.edit_article(reference, request.json, repo, session)
+        services.edit_article(reference, request.json, uow)
     except exceptions.ArticleNotFound as e:
         return jsonify({"message": str(e)}), 404
 
@@ -153,11 +142,10 @@ def remove_article(reference: str) -> Tuple[dict, int]:
     Tuple[dict, int]
         Message with status code.
     """
-    session = get_session()
-    repo = repository.SQLAlchemyRepository(session)
+    uow = unit_of_work.SqlAlchemyUnitOfWork()
 
     try:
-        services.remove_article(reference, repo, session)
+        services.remove_article(reference, uow)
     except exceptions.ArticleNotFound as e:
         return jsonify({"message": str(e)}), 404
 
