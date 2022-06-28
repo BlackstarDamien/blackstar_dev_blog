@@ -1,14 +1,16 @@
 from copy import deepcopy
+from datetime import date
 
 import pytest
+from blog_service.domain.model import Article
 from blog_service.service_layer import unit_of_work
 
 TEST_DATA = {
-    "ref": "test-article",
+    "reference": "test-article",
     "title": "Test Article",
     "author": "Kukulek",
-    "date": "2022-01-01",
-    "desc": "Some cool article",
+    "publication_date": date(2022, 1, 1),
+    "description": "Some cool article",
     "content": "Something Something",
 }
 
@@ -16,7 +18,7 @@ TEST_DATA = {
 def insert_article(session, data_to_insert: dict):
     session.execute(
         "INSERT INTO articles(reference, title, author, publication_date, description, content) VALUES "
-        "(:ref, :title, :author, :date, :desc, :content);",
+        "(:reference, :title, :author, :publication_date, :description, :content);",
         data_to_insert,
     )
 
@@ -34,6 +36,23 @@ def test_uow_can_fetch_article(session_factory):
         article = deepcopy(uow.articles.get("test-article"))
 
     assert article.reference == "test-article"
+
+
+def test_uow_can_save_article(session_factory):
+    """Tests that unit of work is able to save article by
+    given reference.
+    """
+    uow = unit_of_work.SqlAlchemyUnitOfWork(session_factory)
+    with uow:
+        article = Article(**TEST_DATA)
+        uow.articles.add(article)
+        uow.commit()
+
+    new_session = session_factory()
+    article = list(
+        new_session.execute("SELECT * FROM articles WHERE reference='test-article';")
+    )[0]
+    assert article.reference == TEST_DATA["reference"]
 
 
 def test_rolls_back_uncommitted_work_by_default(session_factory):
