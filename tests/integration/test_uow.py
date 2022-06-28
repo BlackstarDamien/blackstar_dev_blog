@@ -15,6 +15,15 @@ TEST_DATA = {
     "tags": {"test1", "test2"},
 }
 
+ANOTHER_TEST_DATA = {
+    "reference": "test-article2",
+    "title": "Test Article Vol 2",
+    "author": "Kukulek",
+    "publication_date": date(2022, 5, 1),
+    "description": "Some cool article again",
+    "content": "Something Something Something",
+}
+
 
 def insert_article(session, data_to_insert: dict):
     session.execute(
@@ -34,6 +43,20 @@ def insert_article(session, data_to_insert: dict):
                 "INSERT INTO tags(_name, articles_id) VALUES (:name, :articles_id);",
                 dict(name=tag, articles_id=article_id),
             )
+
+
+def test_uow_can_list_articles(session_factory):
+    """Tests that unit of work is able to list all articles."""
+    session = session_factory()
+    insert_article(session, TEST_DATA)
+    insert_article(session, ANOTHER_TEST_DATA)
+    session.commit()
+
+    uow = unit_of_work.SqlAlchemyUnitOfWork(session_factory)
+    with uow:
+        articles = deepcopy(uow.articles.list_items())
+
+    assert len(articles) > 0
 
 
 def test_uow_can_fetch_article(session_factory):
@@ -69,6 +92,26 @@ def test_uow_can_save_article(session_factory):
         new_session.execute("SELECT * FROM articles WHERE reference='test-article';")
     )[0]
     assert article.reference == test_article["reference"]
+
+
+def test_uow_can_remove_article(session_factory):
+    """Tests that unit of work is able to remove article by
+    given reference.
+    """
+    session = session_factory()
+    insert_article(session, TEST_DATA)
+    session.commit()
+
+    uow = unit_of_work.SqlAlchemyUnitOfWork(session_factory)
+    with uow:
+        uow.articles.remove("test-article")
+        uow.commit()
+
+    new_session = session_factory()
+    article = list(
+        new_session.execute("SELECT * FROM articles WHERE reference='test-article';")
+    )
+    assert article == []
 
 
 def test_rolls_back_uncommitted_work_by_default(session_factory):
