@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from blog_service.service_layer import unit_of_work
 
 
@@ -19,7 +21,7 @@ def test_uow_can_fetch_article(session_factory):
 
     uow = unit_of_work.SqlAlchemyUnitOfWork(session_factory)
     with uow:
-        article = uow.articles.get("test-article")
+        article = deepcopy(uow.articles.get("test-article"))
 
     assert article.reference == "test-article"
 
