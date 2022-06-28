@@ -43,7 +43,7 @@ jobs:
 
       - name: Run e2e tests
         env:
-          FLASK_APP: entrypoints/api.py
+          FLASK_APP: blog_service/entrypoints/api.py
         run: |
           flask run --host 0.0.0.0 --port 80 & sleep 2
           pytest tests/e2e
