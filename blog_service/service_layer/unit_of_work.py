@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 
 from blog_service import config
-from blog_service.adapters.repository import AbstractRepository, SQLAlchemyRepository
+from blog_service.adapters.repository import (AbstractRepository,
+                                              SQLAlchemyRepository)
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -34,16 +35,28 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
         self.session_factory = session_factory
 
     def __enter__(self):
+        """Initialize session and instatiate repository
+        to prepare unit of work for executing atomic operation
+        on database layer.
+        """
         self.session = self.session_factory()
         self.articles = SQLAlchemyRepository(self.session)
         return super().__enter__()
 
     def __exit__(self, *args):
+        """When operation finished with success or failed,
+        it rollback changes made during the session
+        and close session object.
+        """
         super().__exit__(*args)
         self.session.close()
 
     def commit(self):
+        """Approves changes made during the session.
+        """
         self.session.commit()
 
     def rollback(self):
+        """Revert all changes made during the session.
+        """
         self.session.rollback()
