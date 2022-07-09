@@ -3,8 +3,7 @@ from typing import List, Optional
 
 import pytest
 import requests
-
-from config import get_api_url
+from blog_service.config import get_api_url
 
 
 def post_to_add_article(
@@ -107,7 +106,7 @@ def test_get_article_endpoint_returns_404_and_specified_article():
     article = requests.get(f"{api_url}/articles/article-that-does-not-exist")
 
     assert article.status_code == 404
-    assert article.json()["message"] == f"Article not found."
+    assert article.json()["message"] == "Article not found."
 
 
 @pytest.mark.usefixtures("postgres_session")
@@ -140,7 +139,7 @@ def test_post_article_should_return_400_and_error_message():
     post_request = requests.post(f"{api_url}/articles", json=article_to_add)
 
     assert post_request.status_code == 400
-    assert post_request.json()["message"] == f"Article already exists."
+    assert post_request.json()["message"] == "Article already exists."
 
 
 @pytest.mark.usefixtures("postgres_session")

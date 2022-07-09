@@ -1,10 +1,10 @@
 # Ignore everything
 **
 
-!/adapters/
-!/domain/
-!/entrypoints/
-!/service_layer/
-!/tests/
+# Allow project directories
+!/blog_service/**
+!/tests/**
+!/.devcontainer/**
+
+# Allow requirements
 !requirements.txt
-!config.py
