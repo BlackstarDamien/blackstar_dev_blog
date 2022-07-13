@@ -1,16 +1,12 @@
-name: Deployment
+name: Running tests
 
 on:
-  push:
-    branches:
-      - "master"
-
   pull_request:
     branches:
       - "master"
 
 jobs:
-  deployment:
+  testing:
     runs-on: ubuntu-latest
     container: python:3.10-slim-bullseye
 
