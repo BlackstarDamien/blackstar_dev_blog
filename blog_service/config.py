@@ -10,7 +10,7 @@ def get_api_url():
 
 def get_postgres_uri():
     host = os.getenv("DB_HOST", "172.17.0.1")
-    port = 54321 if host == "172.17.0.1" else 5432
+    port = os.getenv("DB_PORT", 5432)
     password = os.getenv("DB_PASSWORD", "test123")
     user = "blog_user"
     db_name = "blog_db"
